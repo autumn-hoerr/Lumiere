@@ -1,4 +1,6 @@
 .c-photo-card{
-    max-width: 293px;
+    width: 275px;
+    height: 275px;
     float: left;
+    background-size: cover;
 }

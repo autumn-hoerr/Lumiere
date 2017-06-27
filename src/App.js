@@ -5,20 +5,29 @@ import './App.css';
 
 function PhotoCard(props){
   return (
-    <img className="c-photo-card" src={ props.display_src } alt={ props.caption } />
+    <div className="c-photo-card" style={{ backgroundImage: `url(${props.display_src})` }}></div>
   );
 }
 
 class App extends Component {
-  state ={
-    photos: []
+  constructor(){
+    super();
+    this.state = {
+      photos: []
+    }
+    this.fetchData = this.fetchData.bind(this);
   }
-  componentDidMount(){
+  fetchData(){
+    console.log("fetching...")
     ig.scrapeTagPage('kimchiandthebeast')
       .then(result => {
         const photos = result.media
-        this.setState({ photos })
-      })
+        this.setState({ photos: photos })
+    })
+  }
+  componentDidMount(){
+    this.fetchData();
+    this.fetcher = setInterval(this.fetchData, 10000)
   }
   render() {
     return (
