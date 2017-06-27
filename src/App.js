@@ -1,18 +1,31 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import ig from 'instagram-tagscrape';
 import './App.css';
 
+
+function PhotoCard(props){
+  return (
+    <img className="c-photo-card" src={ props.display_src } alt={ props.caption } />
+  );
+}
+
 class App extends Component {
+  state ={
+    photos: []
+  }
+  componentDidMount(){
+    ig.scrapeTagPage('kimchiandthebeast')
+      .then(result => {
+        const photos = result.media
+        this.setState({ photos })
+      })
+  }
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        { this.state.photos.map( photo =>
+          <PhotoCard key={ photo.code } {...photo} />
+        )}
       </div>
     );
   }
