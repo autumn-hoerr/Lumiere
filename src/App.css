@@ -1,7 +1,16 @@
-.c-photo-card{
-    width: 275px;
-    height: 275px;
-    float: left;
-    background-size: cover;
-    background-position: 50% 50%;
+html{
+  overflow: hidden;
+}
+
+.c-photo{
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-row-columns: 25% 25% 25% 25%;
+}
+
+.c-photo__card{
+  width: 100%;
+  height: 25vh;
+  background-size: cover;
+  background-position: 50% 50%;
 }
