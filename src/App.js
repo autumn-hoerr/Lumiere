@@ -39,7 +39,8 @@ class App extends Component {
                   display_src: photo.display_src,
                   id: photo.id,
                   code: photo.code,
-                  caption: photo.caption
+                  caption: photo.caption,
+                  date: photo.date
                 });
               }
             });
