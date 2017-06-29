@@ -2,6 +2,13 @@ html{
   overflow: hidden;
 }
 
+button{
+  background: none;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+}
+
 .c-app {
 }
 
@@ -18,10 +25,12 @@ html{
 .c-photo {
 /*  display: flex;
   flex-direction: column;*/
+  position: relative;
   box-shadow: 1px 8px 16px 0 rgba(0, 0, 0, .15);
   /*border: 5px solid white;*/
   height: calc(25vw - 25px);
   width: calc(25vw - 25px);
+  overflow: hidden;
 }
 
 .c-photo__card{
@@ -38,15 +47,22 @@ html{
 
 .c-photo__meta{
   display: none;
-/*  position: absolute;
+}
+
+.c-photo:hover .c-photo__controls{
   bottom: 0;
+}
+
+.c-photo__controls{
+  position: absolute;
+  bottom: -45px;
   left: 0;
-  right: 0;*/
-  height: 70px;
-  padding: 5px 10px;
+  right: 0;
+  height: 45px;
+  padding: 5px;
   background: white;
   overflow: hidden;
-  font-size: 12px;
+  transition: all 0.1s ease-in-out;
 }
 
 .c-photo__meta p {
