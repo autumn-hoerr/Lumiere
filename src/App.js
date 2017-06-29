@@ -74,7 +74,7 @@ class App extends Component {
   render() {
     return (
       <div className="c-photo">
-        { this.state.photos.reverse().map( photo =>
+        { this.state.photos.sort((a,b) => {return a > b}).map( photo =>
           <PhotoCard key={ photo.code } {...photo} />
         )}
       </div>
