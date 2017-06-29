@@ -18,7 +18,7 @@ class App extends Component {
     super();
     this.state = {
       photos: [],
-      firebase: true,
+      firebase: false,
       hashtag: 'birthday'
     }
     this.fetchData = this.fetchData.bind(this);
