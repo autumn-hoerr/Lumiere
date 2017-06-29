@@ -5,7 +5,9 @@ import './App.css';
 
 function PhotoCard(props){
   return (
-    <div className="c-photo__card" style={{ backgroundImage: `url(${props.display_src})` }}></div>
+    <div className="c-photo__card" style={{ backgroundImage: `url(${props.display_src})` }}>
+      <div className="c-photo__meta">{props.caption}</div>
+    </div>
   );
 }
 
@@ -23,40 +25,40 @@ class App extends Component {
     ig.scrapeTagPage('kimchiandthebeast')
       .then(result => {
         const photos = result.media
-        const newPhotos = [];
         for( let photo in photos ){
           photosRef.child(photos[photo].id).once('value', function(snapshot){
             let exists = (snapshot.val() !== null);
             if(!exists){
-              newPhotos.push(photos[photo].id);
               photosRef.child(photos[photo].id).set({
                 display_src: photos[photo].display_src,
                 id: photos[photo].id,
-                code: photos[photo].code
+                code: photos[photo].code,
+                caption: photos[photo].caption
               });
             }
           });
         }
-        console.log(`${Date.now()}: Added ${newPhotos.length} new photos`);
+        this.setState({ photos: photos });
       });
   }
   componentDidMount(){
-    const photosRef = firebase.database().ref('photos');
+    
     this.fetchData();
-    photosRef.on('value', (snapshot) => {
-      let photos = snapshot.val();
-      let newState = [];
-      for( let photo in photos){
-        newState.push({
-          id: photos[photo].id,
-          display_src: photos[photo].display_src,
-          code: photos[photo].code
-        });
-      }
-      this.setState({
-        photos: newState
-      });
-    });
+    // const photosRef = firebase.database().ref('photos');
+    // photosRef.on('value', (snapshot) => {
+    //   let photos = snapshot.val();
+    //   let newState = [];
+    //   for( let photo in photos){
+    //     newState.push({
+    //       id: photos[photo].id,
+    //       display_src: photos[photo].display_src,
+    //       code: photos[photo].code
+    //     });
+    //   }
+    //   this.setState({
+    //     photos: newState
+    //   });
+    // });
     this.fetcher = setInterval(this.fetchData, 30000)
   }
   render() {
