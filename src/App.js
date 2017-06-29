@@ -40,7 +40,9 @@ class App extends Component {
                   id: photo.id,
                   code: photo.code,
                   caption: photo.caption,
-                  date: photo.date
+                  date: photo.date,
+                  owner: photo.owner,
+                  dimensions: photo.dimensions
                 });
               }
             });
