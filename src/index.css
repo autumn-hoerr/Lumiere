@@ -35,6 +35,20 @@ main{
   font-size: 72px;
   font-weight: 400;
   color: #3d4748;
+  position: relative;
+  top: 3px;
+}
+
+.c-info-banner__hashtag:before {
+  background: url("/ig-logo.png") no-repeat;
+  background-size: 100% 100%;
+  display: inline-block;
+  content: '';
+  height: 60px;
+  width: 60px;
+  margin-right: 20px;
+  position: relative;
+  top: 3px;
 }
 
 .c-info-banner__hashtag span {
