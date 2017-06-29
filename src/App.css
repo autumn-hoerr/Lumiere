@@ -1,6 +1,4 @@
-html{
-  overflow: hidden;
-}
+
 
 button{
   background: none;
@@ -12,7 +10,7 @@ button{
 .c-app {
 }
 
-.c-photo-grid{
+.c-photo-grid span{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows:  repeat(4, 1fr) ;
@@ -74,4 +72,22 @@ button{
    -webkit-box-orient: vertical; 
    text-overflow: ellipsis;
    /*This doesn't truncate to ellipsis ^ and is mostly broke*/
+}
+
+.card-enter, .card-appear{
+  opacity: 0.01;
+}
+
+.card-enter.card-enter-active, .card-appear.card-appear-active{
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.card-leave{
+  opacity: 1;
+}
+
+.card-leave.card-leave-active{
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }

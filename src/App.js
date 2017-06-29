@@ -1,22 +1,32 @@
 import React, { Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ig from 'instagram-tagscrape';
 import firebase from './firebase.js'
 import './App.css';
 
-
-
-function PhotoCard(props){
-  return (
-    <div className="c-photo">
-      <div className="c-photo__card" style={{ backgroundImage: `url(${props.display_src})` }}></div>
-      <div className="c-photo__meta"><p>{props.caption}</p></div>
-      <div className="c-photo__controls">
-        <button onClick={ () => props.removePhoto(props.id) }>
-          <img src="/trashcan.svg" width="20" height="30"/>
-        </button>
-      </div>
+function PhotoControls(props){
+  return(
+    <div className="c-photo__controls">
+      <button onClick={ () => props.removePhoto(props.id) }>
+        <img src="/trashcan.svg" width="20" height="30" alt="Delete" />
+      </button>
     </div>
-  );
+  )
+}
+
+class PhotoCard extends Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return (
+      <div className="c-photo">
+        <div className="c-photo__card" style={{ backgroundImage: `url(${this.props.display_src})` }}></div>
+        <div className="c-photo__meta"><p>{this.props.caption}</p></div>
+        <PhotoControls removePhoto={this.props.removePhoto} id={this.props.id} />
+      </div>
+    );
+  }
 }
 
 class App extends Component {
@@ -26,6 +36,7 @@ class App extends Component {
       photos: [],
       blacklist: [],
       firebase: true,
+      polling: true,
       hashtag: 'birthday'
     }
     this.fetchData = this.fetchData.bind(this);
@@ -38,6 +49,8 @@ class App extends Component {
         display: false,
         id: id
       });
+    } else {
+      this.setState({ blacklist: this.state.blacklist.concat([id]) });
     }
   }
   fetchData(){
@@ -66,59 +79,71 @@ class App extends Component {
             });
             return true;
           });
+        } else {
+          this.setState({ photos: photos });
         }
-
-        this.setState({ photos: photos });
       });
   }
   componentDidMount(){
     this.fetchData();
 
-    const blacklistRef = firebase.database().ref('blacklist');
-    blacklistRef.on('value', (snapshot) => {
-      let list = snapshot.val();
-      let newState = [];
-      for(let item in list){
-        newState.push(list[item].id);
-      }
-
-      this.setState({
-        blacklist: newState
-      })
-    });
-    
-    const photosRef = firebase.database().ref('photos');
-    photosRef.on('value', (snapshot) => {
-      let photos = snapshot.val();
-      let newState = [];
-      for(let photo in photos){
-        if(this.state.blacklist.includes(photos[photo].id)){
-          console.log(`photo: ${photos[photo].id} is in blacklist`);
-        } else {
-          newState.push({
-            id: photos[photo].id,
-            display_src: photos[photo].display_src,
-            code: photos[photo].code
-          });
+    if(this.state.firebase){
+      const blacklistRef = firebase.database().ref('blacklist');
+      blacklistRef.on('value', (snapshot) => {
+        let list = snapshot.val();
+        let newState = [];
+        for(let item in list){
+          newState.push(list[item].id);
         }
-      }
-      this.setState({
-        photos: newState
-      });
-    });
 
-    // this.fetcher = setInterval(this.fetchData, 30000)
+        this.setState({
+          blacklist: newState
+        })
+      });
+
+      const photosRef = firebase.database().ref('photos');
+      photosRef.on('value', (snapshot) => {
+        let photos = snapshot.val();
+        let newState = [];
+        for(let photo in photos){
+          if(!this.state.blacklist.includes(photos[photo].id)){
+            newState.push({
+              id: photos[photo].id,
+              display_src: photos[photo].display_src,
+              code: photos[photo].code,
+              date: photos[photo].date
+            });
+          }
+        }
+        this.setState({
+          photos: newState
+        });
+      });
+    }
+
+    if(this.state.polling){
+      this.fetcher = setInterval(this.fetchData, 30000)
+    }
   }
   render() {
     return (
-      <div className="c-photo-grid">
-        { this.state.photos
-            .filter((photo) => !this.state.blacklist.includes(photo.id))
-            .sort((a,b) => {return a > b})
-            .map( photo =>
-              <PhotoCard key={ photo.code } removePhoto={ this.removePhoto } {...photo} />
-            )
-        }
+        <div className="c-photo-grid">
+          <ReactCSSTransitionGroup
+            transitionName="card"
+            transitionAppear={false}
+            transitionAppearTimeout={500}
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={300} >
+              
+                { this.state.photos
+                    .filter((photo) => !this.state.blacklist.includes(photo.id))
+                    .sort((a,b) => {return b.date - a.date })
+                    .map( photo =>
+                      <PhotoCard key={ photo.id } removePhoto={ this.removePhoto } {...photo} />
+                    )
+                }
+              
+          </ReactCSSTransitionGroup>
       </div>
     );
   }
