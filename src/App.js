@@ -15,29 +15,35 @@ class App extends Component {
   constructor(){
     super();
     this.state = {
-      photos: []
+      photos: [],
+      firebase: false,
+      hashtag: 'birthday'
     }
     this.fetchData = this.fetchData.bind(this);
   }
   fetchData(){
     console.log("fetching...")
     const photosRef = firebase.database().ref('photos');
-    ig.scrapeTagPage('kimchiandthebeast')
+    ig.scrapeTagPage(this.state.hashtag)
       .then(result => {
         const photos = result.media
-        for( let photo in photos ){
-          photosRef.child(photos[photo].id).once('value', function(snapshot){
-            let exists = (snapshot.val() !== null);
-            if(!exists){
-              photosRef.child(photos[photo].id).set({
-                display_src: photos[photo].display_src,
-                id: photos[photo].id,
-                code: photos[photo].code,
-                caption: photos[photo].caption
-              });
-            }
-          });
+        
+        if(this.state.firebase){
+          for( let photo in photos ){
+            photosRef.child(photos[photo].id).once('value', function(snapshot){
+              let exists = (snapshot.val() !== null);
+              if(!exists){
+                photosRef.child(photos[photo].id).set({
+                  display_src: photos[photo].display_src,
+                  id: photos[photo].id,
+                  code: photos[photo].code,
+                  caption: photos[photo].caption
+                });
+              }
+            });
+          }
         }
+
         this.setState({ photos: photos });
       });
   }
