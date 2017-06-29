@@ -6,28 +6,39 @@ body, html {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #F9F8FA;
+  color: #3d4748;
 }
 
 main{
   position: relative;
 }
 
-.c-app{
-  padding: 10px;
-}
 
 .c-info-banner{
   position: fixed;
   background: white;
+  border-top: 3px solid white;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 100px;
-  padding: 15px;
-  border-top: 1px solid #666;
+  height: 90px;
+  padding: 0 15px;
+  background-image: linear-gradient(130deg, #FFE8AB, #F8B39E);
 }
 
 .c-info-banner__hashtag{
+  font-family: "azote", sans-serif;
+  /*font-family: "nimbus-sans";*/
   margin: 0;
-  line-height: 70px;
+  line-height: 90px;
+  font-size: 72px;
+  font-weight: 400;
+  color: #3d4748;
+}
+
+.c-info-banner__hashtag span {
+  /*color: #afb5b5;*/
+  /*color: #ff4524;*/
+  padding: 0 10px;
 }

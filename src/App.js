@@ -5,8 +5,10 @@ import './App.css';
 
 function PhotoCard(props){
   return (
-    <div className="c-photo__card" style={{ backgroundImage: `url(${props.display_src})` }}>
-      <div className="c-photo__meta">{props.caption}</div>
+    <div className="c-photo">
+      <div className="c-photo__card" style={{ backgroundImage: `url(${props.display_src})` }}>
+      </div>
+      <div className="c-photo__meta"><p>{props.caption}</p></div>
     </div>
   );
 }
@@ -17,7 +19,7 @@ class App extends Component {
     this.state = {
       photos: [],
       firebase: true,
-      hashtag: 'kimchiandthebeast'
+      hashtag: 'birthday'
     }
     this.fetchData = this.fetchData.bind(this);
   }
@@ -71,11 +73,11 @@ class App extends Component {
     //     photos: newState
     //   });
     // });
-    this.fetcher = setInterval(this.fetchData, 30000)
+    // this.fetcher = setInterval(this.fetchData, 30000)
   }
   render() {
     return (
-      <div className="c-photo">
+      <div className="c-photo-grid">
         { this.state.photos.sort((a,b) => {return a > b}).map( photo =>
           <PhotoCard key={ photo.code } {...photo} />
         )}
