@@ -19,7 +19,7 @@ html{
 /*  display: flex;
   flex-direction: column;*/
   box-shadow: 1px 8px 16px 0 rgba(0, 0, 0, .15);
-  border: 3px solid white;
+  /*border: 5px solid white;*/
   height: calc(25vw - 25px);
   width: calc(25vw - 25px);
 }
@@ -29,6 +29,7 @@ html{
   position: relative;
   background-size: cover;
   background-position: 50% 50%;
+  box-shadow: inset 0 0 0 3px #fff, inset 0 0 2px 3px #FEFEFE;
 }
 
 .c-photo__card img{
