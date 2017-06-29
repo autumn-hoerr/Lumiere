@@ -20,11 +20,12 @@ html{
   flex-direction: column;*/
   box-shadow: 1px 8px 16px 0 rgba(0, 0, 0, .15);
   border: 3px solid white;
+  height: calc(25vw - 25px);
+  width: calc(25vw - 25px);
 }
 
 .c-photo__card{
-  height: 25vw;
-  height: 25vw;
+  height: 100%;
   position: relative;
   background-size: cover;
   background-position: 50% 50%;
