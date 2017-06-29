@@ -22,7 +22,7 @@ main{
   bottom: 0;
   left: 0;
   right: 0;
-  height: 90px;
+  height: 110px;
   padding: 0 15px;
   background-image: linear-gradient(130deg, #FFE8AB, #F8B39E);
 }
@@ -30,9 +30,9 @@ main{
 .c-info-banner__hashtag{
   font-family: "azote", sans-serif;
   /*font-family: "nimbus-sans";*/
-  margin: 0;
-  line-height: 90px;
-  font-size: 72px;
+  margin: 0 0 0 10px;
+  line-height: 110px;
+  font-size: 88px;
   font-weight: 400;
   color: #3d4748;
   position: relative;
