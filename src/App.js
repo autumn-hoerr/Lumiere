@@ -14,14 +14,21 @@ function PhotoControls(props){
   )
 }
 
-function PhotoCard(props){
-  return (
-    <div className="c-photo">
-      <div className="c-photo__card" style={{ backgroundImage: `url(${props.display_src})` }}></div>
-      <div className="c-photo__meta"><p>{props.caption}</p></div>
-      <PhotoControls removePhoto={props.removePhoto} id={props.id} />
-    </div>
-  );
+class PhotoCard extends Component{
+  componentWillMount() {
+    //preload images
+    const img = document.createElement('img');
+    img.src = this.props.display_src;
+  }
+  render(){
+    return (
+      <div className="c-photo">
+        <div className="c-photo__card" style={{ backgroundImage: `url(${this.props.display_src})` }}></div>
+        <div className="c-photo__meta"><p>{this.props.caption}</p></div>
+        <PhotoControls removePhoto={this.props.removePhoto} id={this.props.id} />
+      </div>
+    );
+  }
 }
 
 class App extends Component {
