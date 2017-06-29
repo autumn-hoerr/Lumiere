@@ -16,8 +16,8 @@ class App extends Component {
     super();
     this.state = {
       photos: [],
-      firebase: false,
-      hashtag: 'birthday'
+      firebase: true,
+      hashtag: 'kimchiandthebeast'
     }
     this.fetchData = this.fetchData.bind(this);
   }
@@ -27,21 +27,24 @@ class App extends Component {
     ig.scrapeTagPage(this.state.hashtag)
       .then(result => {
         const photos = result.media
-        
+        // console.dir(result);
         if(this.state.firebase){
-          for( let photo in photos ){
-            photosRef.child(photos[photo].id).once('value', function(snapshot){
+          // console.log("firebase enabled")
+          photos.map(function(photo){
+            photosRef.child(photo.id).once('value', function(snapshot){
               let exists = (snapshot.val() !== null);
+              console.log(photo.id, snapshot.val());
               if(!exists){
-                photosRef.child(photos[photo].id).set({
-                  display_src: photos[photo].display_src,
-                  id: photos[photo].id,
-                  code: photos[photo].code,
-                  caption: photos[photo].caption
+                photosRef.child(photo.id).set({
+                  display_src: photo.display_src,
+                  id: photo.id,
+                  code: photo.code,
+                  caption: photo.caption
                 });
               }
             });
-          }
+            return true;
+          });
         }
 
         this.setState({ photos: photos });
