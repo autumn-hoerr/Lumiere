@@ -4,6 +4,9 @@ import ig from 'instagram-tagscrape';
 import firebase from './firebase.js'
 import './App.css';
 
+const photosRef = firebase.database().ref('photos');
+const blacklistRef = firebase.database().ref('blacklist');
+
 function PhotoControls(props){
   return(
     <div className="c-photo__controls">
@@ -32,20 +35,23 @@ class PhotoCard extends Component{
 }
 
 class App extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       photos: [],
       blacklist: [],
       firebase: true,
-      polling: true,
+      polling: false,
+      interval: 30*1000,
       hashtag: 'birthday'
     }
     this.fetchData = this.fetchData.bind(this);
     this.removePhoto = this.removePhoto.bind(this);
+    this.updatePhotos = this.updatePhotos.bind(this);
+    this.updateBlacklist = this.updateBlacklist.bind(this);
   }
+
   removePhoto(id){
-    const blacklistRef = firebase.database().ref('blacklist');
     if(this.state.firebase){
       blacklistRef.child(id).set({
         display: false,
@@ -55,76 +61,74 @@ class App extends Component {
       this.setState({ blacklist: this.state.blacklist.concat([id]) });
     }
   }
+
+  pushPhotoToFirebase(photo){
+    photosRef.child(photo.id).once('value', function(snapshot){
+      let exists = (snapshot.val() !== null);
+      if(!exists){
+        photosRef.child(photo.id).set({
+          display_src: photo.display_src,
+          id: photo.id,
+          code: photo.code,
+          caption: photo.caption,
+          date: photo.date,
+          owner: photo.owner,
+          dimensions: photo.dimensions
+        });
+      }
+    });
+  }
+
   fetchData(){
-    console.log("fetching...")
-    const photosRef = firebase.database().ref('photos');
     ig.scrapeTagPage(this.state.hashtag)
       .then(result => {
-        const photos = result.media
-        // console.dir(result);
+        const photos = result.media;
         if(this.state.firebase){
-          // console.log("firebase enabled")
-          photos.map(function(photo){
-            photosRef.child(photo.id).once('value', function(snapshot){
-              let exists = (snapshot.val() !== null);
-              if(!exists){
-                photosRef.child(photo.id).set({
-                  display_src: photo.display_src,
-                  id: photo.id,
-                  code: photo.code,
-                  caption: photo.caption,
-                  date: photo.date,
-                  owner: photo.owner,
-                  dimensions: photo.dimensions
-                });
-              }
-            });
-            return true;
-          });
+          photos.map(this.pushPhotoToFirebase);
         } else {
           this.setState({ photos: photos });
         }
       });
   }
-  componentDidMount(){
-    this.fetchData();
 
-    if(this.state.firebase){
-      const blacklistRef = firebase.database().ref('blacklist');
-      blacklistRef.on('value', (snapshot) => {
-        let list = snapshot.val();
-        let newState = [];
-        for(let item in list){
-          newState.push(list[item].id);
-        }
-
-        this.setState({
-          blacklist: newState
-        })
-      });
-
-      const photosRef = firebase.database().ref('photos');
-      photosRef.on('value', (snapshot) => {
-        let photos = snapshot.val();
-        let newState = [];
-        for(let photo in photos){
-          if(!this.state.blacklist.includes(photos[photo].id)){
-            newState.push({
-              id: photos[photo].id,
-              display_src: photos[photo].display_src,
-              code: photos[photo].code,
-              date: photos[photo].date
-            });
-          }
-        }
-        this.setState({
-          photos: newState
+  updatePhotos(snapshot){
+    let photos = snapshot.val();
+    let newState = [];
+    for(let photo in photos){
+      if(!this.state.blacklist.includes(photos[photo].id)){
+        newState.push({
+          id: photos[photo].id,
+          code: photos[photo].code,
+          date: photos[photo].date,
+          display_src: photos[photo].display_src
         });
-      });
+      }
+    }
+    this.setState({
+      photos: newState
+    });
+  }
+
+  updateBlacklist(snapshot){
+    let list = snapshot.val();
+    let newState = [];
+    for(let item in list){
+      newState.push(list[item].id);
     }
 
+    this.setState({
+      blacklist: newState
+    });
+  }
+
+  componentDidMount(){
+    this.fetchData();
+    if(this.state.firebase){
+      blacklistRef.on('value', this.updateBlacklist);
+      photosRef.on('value', this.updatePhotos);
+    }
     if(this.state.polling){
-      this.fetcher = setInterval(this.fetchData, 30000)
+      this.fetcher = setInterval(this.fetchData, this.state.interval)
     }
   }
   render() {
@@ -132,19 +136,17 @@ class App extends Component {
         <div className="c-photo-grid">
           <ReactCSSTransitionGroup
             transitionName="card"
-            transitionAppear={false}
+            transitionAppear={true}
             transitionAppearTimeout={500}
             transitionEnterTimeout={500}
             transitionLeaveTimeout={300} >
-              
-                { this.state.photos
-                    .filter((photo) => !this.state.blacklist.includes(photo.id))
-                    .sort((a,b) => {return b.date - a.date })
-                    .map( photo =>
-                      <PhotoCard key={ photo.id } removePhoto={ this.removePhoto } {...photo} />
-                    )
-                }
-              
+              { this.state.photos
+                  .filter((photo) => !this.state.blacklist.includes(photo.id))
+                  .sort((a,b) => {return b.date - a.date })
+                  .map( photo =>
+                    <PhotoCard key={ photo.id } removePhoto={ this.removePhoto } {...photo} />
+                  )
+              }
           </ReactCSSTransitionGroup>
       </div>
     );
