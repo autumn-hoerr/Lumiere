@@ -22,7 +22,7 @@ main{
   bottom: 0;
   left: 0;
   right: 0;
-  height: 110px;
+  height: 80px;
   padding: 0 15px;
   background-image: linear-gradient(130deg, #FFE8AB, #F8B39E);
 }
@@ -31,12 +31,12 @@ main{
   font-family: "azote", sans-serif;
   /*font-family: "nimbus-sans";*/
   margin: 0 0 0 10px;
-  line-height: 110px;
-  font-size: 88px;
+  line-height: 80px;
+  font-size: 76px;
   font-weight: 400;
   color: #3d4748;
   position: relative;
-  top: 3px;
+  /*top: 3px;*/
 }
 
 .c-info-banner__hashtag:before {
@@ -44,11 +44,11 @@ main{
   background-size: 100% 100%;
   display: inline-block;
   content: '';
-  height: 60px;
-  width: 60px;
+  height: 50px;
+  width: 50px;
   margin-right: 20px;
   position: relative;
-  top: 5px;
+  /*top: 5px;*/
 }
 
 .c-info-banner__hashtag span {

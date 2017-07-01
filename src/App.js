@@ -40,9 +40,9 @@ class App extends Component {
     this.state = {
       photos: [],
       blacklist: [],
-      firebase: true,
-      polling: false,
-      interval: 30*1000,
+      firebase: false,
+      polling: true,
+      interval: 10*1000,
       hashtag: 'birthday'
     }
     this.fetchData = this.fetchData.bind(this);
